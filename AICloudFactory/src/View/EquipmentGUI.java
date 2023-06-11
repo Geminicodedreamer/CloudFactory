@@ -9,20 +9,16 @@ import DataBase.EquipmentTypeDataBase;
 import Model.Equipment;
 import Model.EquipmentType;
 
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Vector;
 
-import javax.swing.*; 
-import java.awt.*; 
-import java.awt.event.*; 
 
 class EquipmentDialog extends JDialog implements ActionListener
 {
-    private JLabel nameLabel, codeLabel, typeLabel, specificationLabel, borrowableLabel, switchableLabel, descriptionLabel, factoryNameLabel;
-    private JTextField nameTextField, codeTextField, specificationTextField, factoryNameTextField;
+    private JLabel nameLabel, typeLabel, specificationLabel, borrowableLabel, switchableLabel, descriptionLabel, factoryNameLabel;
+    private JTextField nameTextField, specificationTextField, factoryNameTextField;
     private JComboBox<String> typeComboBox, borrowableComboBox;
     private JCheckBox switchableCheckBox;
     private JTextArea descriptionTextArea;

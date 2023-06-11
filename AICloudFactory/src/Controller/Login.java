@@ -279,7 +279,7 @@ public class Login extends JFrame implements ActionListener {
             } else {
                 setVisible(false);
                 if(user.getRole().equals("系统管理员")){new MenuGUI();}
-                else if(user.getRole().equals("云工厂")) { new CloudUserGUI();}
+                else if(user.getRole().equals("云工厂")) { new CloudUserGUI(user);}
                 else{ JOptionPane.showMessageDialog(this, "登陆成功！", "成功", JOptionPane.INFORMATION_MESSAGE);
                     dispose();
                 }
