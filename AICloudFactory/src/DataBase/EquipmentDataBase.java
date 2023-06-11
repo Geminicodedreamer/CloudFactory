@@ -85,6 +85,18 @@ public class EquipmentDataBase {
         }
     }
 
+    public static ArrayList<Equipment> getEquipmentByFactoryName(String factoryName) {
+        loadDatabase();
+        ArrayList<Equipment> equipmentsOfFactory = new ArrayList<Equipment>();
+        for (Equipment equipment : equipments) {
+            if (equipment.getFactory() != null && equipment.getFactory().getName().equals(factoryName)) {
+                equipmentsOfFactory.add(equipment);
+            }
+        }
+        return equipmentsOfFactory;
+    }
+
+
     public static Equipment getEquipmentByName(String equipmentName) {
         loadDatabase();
         for (Equipment equipment : equipments) {
@@ -114,7 +126,6 @@ public class EquipmentDataBase {
         equipments.get(idx).setSwitchable(equipment.isSwitchable()); 
         equipments.get(idx).setDescription(equipment.getDescription()); 
         updateDatabase(); 
-
     }
 
     public static ArrayList<Equipment> getEquipmentByType(String type) {

@@ -109,6 +109,19 @@ public class ProductDataBase {
         return null;
     }
 
+    public static void modifyProduct(Product newProduct) {
+        int idx = products.indexOf(getProductByID(newProduct.getID()));
+        products.get(idx).setProductName(newProduct.getProductName());
+        products.get(idx).setProductCategory(newProduct.getProductCategory());
+        products.get(idx).setFactory(newProduct.getFactory());
+        products.get(idx).setEquipment(newProduct.getEquipment());
+        products.get(idx).setProductType(newProduct.getProductType());
+        products.get(idx).setProductDescription(newProduct.getProductDescription());
+        updateDatabase();
+    }
+
+
+
 
 }
 

@@ -75,6 +75,17 @@ public class FactoryDataBase {
         return null;
     }
 
+    
+public static Factory getFactoryByOwnerName(String ownerName) {
+        loadDatabase();
+        for (Factory factory : factories) {
+            if (factory.getOwner().getName().equals(ownerName)) {
+                return factory;
+            }
+        }
+        return null;
+    }
+
 
     public static void updateFactoryStatus(int id, String status) {
         for (Factory factory : factories) {

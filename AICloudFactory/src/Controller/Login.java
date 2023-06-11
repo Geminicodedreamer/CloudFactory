@@ -1,28 +1,17 @@
 package Controller;
 
-// 设计一个登录界面，标题大一点，写云平台制造
-// 然后下面是账号，密码
-// 再下一行是登录按钮和注册按钮
-// 点击登录后会去UserDataBase中通过账户名寻找该用户，如果密码不对，跳出界面显示还有几次尝试机会，机会一共三次
-// 点击注册按钮会跳出注册界面
-
-
-
 import javax.swing.*;
 
 import DataBase.UserDataBase;
 import Model.CloudAdmin;
 import Model.SystemAdmin;
 import Model.User;
-import View.CloudUser;
+import View.CloudUserGUI;
 import View.MenuGUI;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-
-
 
 
 class RegisterGUI extends JFrame{
@@ -143,7 +132,7 @@ class RegisterGUI extends JFrame{
                 } else {
                     
                     if(registerType.equals("云工厂")){
-                        CloudAdmin cloudAdmin = new CloudAdmin(account, password,registerType,name , phoneNumber , (UserDataBase.getUsers().size() != 0) ? UserDataBase.getUsers().get(UserDataBase.getUsers().size() - 1).getId() + 1 : 1,factoryName, factoryIntro);
+                        new CloudAdmin(account, password,registerType,name , phoneNumber , (UserDataBase.getUsers().size() != 0) ? UserDataBase.getUsers().get(UserDataBase.getUsers().size() - 1).getId() + 1 : 1,factoryName, factoryIntro);
                     }else{
                         User user = new User(account, password,registerType,name , phoneNumber , (UserDataBase.getUsers().size() != 0) ? UserDataBase.getUsers().get(UserDataBase.getUsers().size() - 1).getId() + 1 : 1);
                         UserDataBase.addUser(user);
@@ -290,7 +279,10 @@ public class Login extends JFrame implements ActionListener {
             } else {
                 setVisible(false);
                 if(user.getRole().equals("系统管理员")){new MenuGUI();}
-                else if(user.getRole().equals("云工厂")) { new CloudUser();}
+                else if(user.getRole().equals("云工厂")) { new CloudUserGUI();}
+                else{ JOptionPane.showMessageDialog(this, "登陆成功！", "成功", JOptionPane.INFORMATION_MESSAGE);
+                    dispose();
+                }
             }
         } else if (e.getSource() == registerButton) {
             new RegisterGUI();

@@ -1,25 +1,3 @@
-
-// 设备管理系统
-// 最上面的是输入框、按照名称查询按钮、重置
-// 点击按照类别查询按钮，根据输入框输入的信息，找到该设备名称的设备并展示在下面的表格中，点击重置后表格恢复原状
-// 下一行有四个按钮，新建、删除、修改、设备状态
-// 点击新建后弹出输入框，除了id和设备编号，其余都得输入初始化，其中设备类别选择时会出现下拉列表，只从现有的EquipmentTypeDataBase中选择，新建之后数据库和表格会更新
-// 点击删除后会弹出界面确定是否删除，删除后表格和数据库更新
-// 点击修改后会对选择的那一行进行修改，弹出窗口以修改信息，id和设备编号不可修改
-// 点击设备状态后改变选择的那一行的设备的状态，true变false，false变true，更新数据库和表格
-// 下面显示表格，表格信息从EquipmentDataBase读入，表格不可被修改
-// 表格一共9列分别是ID、设备名称、设备编号、设备类别、设备规格、设备状态、设备描述、租用状态、所属工厂名称
-// 其中设备状态true为开机false为关机，租用状态分为已被租用、未被租用(factory == null)、工厂设备，如果未被租用则后面的所属工厂为空
-// 右下角有返回键返回主菜单
-// 补充：
-// 当设备被租用时，不允许删除。设备所属设备类型数据来源于系统维护的设备类型信息
-// 当设备为关闭状态时，点击远程开机，可以远程开启设备
-// 当设备为未被租用状态时，点击远程关机，可以远程关闭设备
-// 表格信息从EquipmentDataBase读入，一切修改操作都从数据库操作
-// 用swing写
-// 下面是EquipmentDataBase类和Equipment类
-
-
 package View;
 
 
@@ -173,14 +151,10 @@ class EquipmentModifyDialog extends JDialog implements ActionListener {
     private JComboBox<String> typeComboBox;
     private JLabel specificationLabel;
     private JTextField specificationTextField;
-    private JLabel borrowableLabel;
-    private JComboBox<String> borrowableComboBox;
     private JLabel switchableLabel;
     private JCheckBox switchableCheckBox;
     private JLabel descriptionLabel;
     private JTextArea descriptionTextArea;
-    private JLabel factoryNameLabel;
-    private JTextField factoryNameTextField;
     private JButton okButton;
     private JButton cancelButton;
 
@@ -339,33 +313,22 @@ public class EquipmentGUI extends JFrame {
         resetButton = new JButton("重置");
         resetButton.setBounds(850, 50, 100, 30);
         panel.add(resetButton); 
-        
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(null);
-        buttonPanel.setBounds(50, 470, 900, 30);
-        panel.add(buttonPanel);
 
         newButton = new JButton("新建");
-        newButton.setBounds(0, 0, 100, 30);
-        buttonPanel.add(newButton);
+        newButton.setBounds(50, 100, 100, 30);
+        panel.add(newButton);
 
         deleteButton = new JButton("删除");
-        deleteButton.setBounds(150, 0, 100, 30);
-        buttonPanel.add(deleteButton);
+        deleteButton.setBounds(200, 100, 100, 30);
+        panel.add(deleteButton);
 
         modifyButton = new JButton("修改");
-        modifyButton.setBounds(300, 0, 100, 30);
-        buttonPanel.add(modifyButton);
+        modifyButton.setBounds(350, 100, 100, 30);
+        panel.add(modifyButton);
 
         switchButton = new JButton("切换设备状态");
-        switchButton.setBounds(450, 0, 130, 30);
-        buttonPanel.add(switchButton);
-
-        backButton = new JButton("返回");
-        backButton.setBounds(750, 0, 100, 30);
-        buttonPanel.add(backButton);
-
-        panel.add(buttonPanel);
+        switchButton.setBounds(500, 100, 130, 30);
+        panel.add(switchButton);
 
         tableModel = new DefaultTableModel(){
             @Override
@@ -387,8 +350,10 @@ public class EquipmentGUI extends JFrame {
         JScrollPane scrollPane = new JScrollPane(equipmentTable);
         scrollPane.setBounds(50, 150, 900, 300);
         panel.add(scrollPane);
-
-       
+        
+        backButton = new JButton("返回");
+        backButton.setBounds(750, 500, 100, 30);
+        panel.add(backButton);
 
         // 初始化设备列表
         updateTable();
