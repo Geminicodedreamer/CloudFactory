@@ -24,7 +24,7 @@ class newuser extends JDialog implements ActionListener{
     private JComboBox<String> roleComboBox ;
     private JButton confirmButton ;
     private JButton cancelButton ;
-    public newuser(Frame parent , UserGUI usergui)
+    public newuser(Frame parent)
     {
         super(parent ,"填入用户基本信息",true);
         setSize(400, 400);
@@ -220,7 +220,7 @@ public class UserGUI extends JFrame implements ActionListener {
     }
 
     private void newUser() {
-        new newuser(this , this);
+        new newuser(this);
         resetTable();
     }
 

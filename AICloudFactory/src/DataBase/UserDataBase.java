@@ -34,7 +34,6 @@ public class UserDataBase {
             for (User user : users) {
                 String userString = user.getId() + "_" + user.getAccount() + "_" + user.getPassword() + "_"
                         + user.getRole() + "_" + user.getName() + "_" + user.getPhoneNumber();
-                // if(user.getRole().equals("云工厂")) userString += user.getFactory();
                 fos.write(userString.getBytes());
                 fos.write("\n".getBytes());
             }
