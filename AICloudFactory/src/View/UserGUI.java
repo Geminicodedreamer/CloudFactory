@@ -12,6 +12,93 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+class newuser extends JDialog implements ActionListener{
+    private JPanel panel ;
+    private JLabel accountLabel;
+    private JTextField accountField ;
+    private JLabel nameLabel;
+    private JTextField nameField ;
+    private JLabel phoneNumberLabel ;
+    private JTextField phoneNumberField;
+    private JLabel roleLabel ;
+    private JComboBox<String> roleComboBox ;
+    private JButton confirmButton ;
+    private JButton cancelButton ;
+    public newuser(Frame parent , UserGUI usergui)
+    {
+        super(parent ,"填入用户基本信息",true);
+        setSize(400, 400);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        panel = new JPanel();
+        panel.setLayout(null);
+        add(panel);
+
+        accountLabel = new JLabel("用户名:");
+        accountLabel.setBounds(50, 50, 80, 30);
+        panel.add(accountLabel);
+
+        accountField = new JTextField();
+        accountField.setBounds(150, 50, 150, 30);
+        panel.add(accountField);
+
+        nameLabel = new JLabel("姓名:");
+        nameLabel.setBounds(50, 100, 80, 30);
+        panel.add(nameLabel);
+
+        nameField = new JTextField();
+        nameField.setBounds(150, 100, 150, 30);
+        panel.add(nameField);
+
+        phoneNumberLabel = new JLabel("电话号码:");
+        phoneNumberLabel.setBounds(50, 150, 80, 30);
+        panel.add(phoneNumberLabel);
+
+        phoneNumberField = new JTextField();
+        phoneNumberField.setBounds(150, 150, 150, 30);
+        panel.add(phoneNumberField);
+
+        roleLabel = new JLabel("用户类型:");
+        roleLabel.setBounds(50, 200, 80, 30);
+        panel.add(roleLabel);
+
+        String[] roles = { "云工厂", "经销商" };
+        roleComboBox = new JComboBox<>(roles);
+        roleComboBox.setBounds(150, 200, 150, 30);
+        panel.add(roleComboBox);
+
+        confirmButton = new JButton("确认");
+        confirmButton.setBounds(100, 250, 80, 30);
+        confirmButton.addActionListener(this);
+        panel.add(confirmButton);
+
+        cancelButton = new JButton("取消");
+        cancelButton.setBounds(200, 250, 80, 30);
+        cancelButton.addActionListener(this);
+        panel.add(cancelButton);
+        setVisible(true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == confirmButton) {
+            String account = accountField.getText();
+            String name = nameField.getText();
+            String phoneNumber = phoneNumberField.getText();
+            String role = (String) roleComboBox.getSelectedItem();
+            if(account.isEmpty() || name.isEmpty() || phoneNumber.isEmpty()){
+                Frame frame = new Frame();
+                JOptionPane.showMessageDialog(frame, "请填写完整信息。");
+                return;
+            }
+            User newUser = new User( account, "", role, name, phoneNumber , (UserDataBase.getUsers().size()!= 0) ? UserDataBase.getUsers().get(UserDataBase.getUsers().size() - 1).getId() + 1 : 1);
+            UserDataBase.addUser(newUser);
+            dispose();
+        } else if(e.getSource() == cancelButton) {
+            dispose();
+        }
+    }
+}
 public class UserGUI extends JFrame implements ActionListener {
     private static final long serialVersionUID = 1L;
     private JPanel panel;
@@ -28,7 +115,7 @@ public class UserGUI extends JFrame implements ActionListener {
     private DefaultTableModel model;
     private ArrayList<User> users;
     private User selectedUser;
-
+    private boolean flag = true;
     public UserGUI() {
         setTitle("用户管理界面");
         setSize(800, 600);
@@ -133,77 +220,8 @@ public class UserGUI extends JFrame implements ActionListener {
     }
 
     private void newUser() {
-
-        JFrame frame = new JFrame("填入用户基本信息");
-        frame.setSize(400, 400);
-        frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        JPanel panel = new JPanel();
-        panel.setLayout(null);
-        frame.add(panel);
-
-        JLabel accountLabel = new JLabel("用户名:");
-        accountLabel.setBounds(50, 50, 80, 30);
-        panel.add(accountLabel);
-
-        JTextField accountField = new JTextField();
-        accountField.setBounds(150, 50, 150, 30);
-        panel.add(accountField);
-
-        JLabel nameLabel = new JLabel("姓名:");
-        nameLabel.setBounds(50, 100, 80, 30);
-        panel.add(nameLabel);
-
-        JTextField nameField = new JTextField();
-        nameField.setBounds(150, 100, 150, 30);
-        panel.add(nameField);
-
-        JLabel phoneNumberLabel = new JLabel("电话号码:");
-        phoneNumberLabel.setBounds(50, 150, 80, 30);
-        panel.add(phoneNumberLabel);
-
-        JTextField phoneNumberField = new JTextField();
-        phoneNumberField.setBounds(150, 150, 150, 30);
-        panel.add(phoneNumberField);
-
-        JLabel roleLabel = new JLabel("用户类型:");
-        roleLabel.setBounds(50, 200, 80, 30);
-        panel.add(roleLabel);
-
-        String[] roles = { "云工厂", "经销商" };
-        JComboBox<String> roleComboBox = new JComboBox<>(roles);
-        roleComboBox.setBounds(150, 200, 150, 30);
-        panel.add(roleComboBox);
-
-        JButton confirmButton = new JButton("确认");
-        confirmButton.setBounds(100, 250, 80, 30);
-        confirmButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String account = accountField.getText();
-                String name = nameField.getText();
-                String phoneNumber = phoneNumberField.getText();
-                String role = (String) roleComboBox.getSelectedItem();
-                new UserDataBase();
-                User newUser = new User( account, "", role, name, phoneNumber , (UserDataBase.getUsers().size()!= 0) ? UserDataBase.getUsers().get(UserDataBase.getUsers().size() - 1).getId() + 1 : 1);
-                UserDataBase.addUser(newUser);
-                showUsers();
-                frame.dispose();
-            }
-        });
-        panel.add(confirmButton);
-
-        JButton cancelButton = new JButton("取消");
-        cancelButton.setBounds(200, 250, 80, 30);
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                frame.dispose();
-            }
-        });
-        panel.add(cancelButton);
-
-        frame.setVisible(true);
+        new newuser(this , this);
+        resetTable();
     }
 
     private void deleteUser() {
@@ -322,6 +340,7 @@ public class UserGUI extends JFrame implements ActionListener {
         showUsers();
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == searchButton) {
             searchUser();
