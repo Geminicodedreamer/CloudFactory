@@ -412,10 +412,6 @@ public class CloudUserGUI extends JFrame{
 
         }
     }
-    public static void main(String[] args) {
-        User user = UserDataBase.getUserById(4);
-        new CloudUserGUI(user);
-    }
 
 }
 
