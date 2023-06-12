@@ -125,6 +125,7 @@ public class EquipmentDataBase {
         equipments.get(idx).setBorrowable(equipment.isBorrowable()); 
         equipments.get(idx).setSwitchable(equipment.isSwitchable()); 
         equipments.get(idx).setDescription(equipment.getDescription()); 
+        equipments.get(idx).setFactory(equipment.getFactory()); 
         updateDatabase(); 
     }
 

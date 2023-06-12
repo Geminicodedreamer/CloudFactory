@@ -2,12 +2,15 @@
 package View;
 
 import javax.swing.*;
+
+import Controller.Login;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MenuGUI extends JFrame implements ActionListener {
-    private JButton userBtn, factoryBtn, categoryBtn, productBtn, deviceCategoryBtn, deviceBtn;
+    private JButton userBtn, factoryBtn, categoryBtn, productBtn, deviceCategoryBtn, deviceBtn,backButton;
 
     public MenuGUI() {
         setTitle("菜单");
@@ -24,6 +27,7 @@ public class MenuGUI extends JFrame implements ActionListener {
         productBtn = new JButton("产品信息管理");
         deviceCategoryBtn = new JButton("设备类别管理");
         deviceBtn = new JButton("设备管理");
+        backButton = new JButton("退出");
 
         userBtn.addActionListener(this);
         factoryBtn.addActionListener(this);
@@ -31,7 +35,7 @@ public class MenuGUI extends JFrame implements ActionListener {
         productBtn.addActionListener(this);
         deviceCategoryBtn.addActionListener(this);
         deviceBtn.addActionListener(this);
-
+        backButton.addActionListener(this);
         
         // set all button colors to white, red on hover, and yellow on click
         userBtn.setBackground(Color.WHITE);
@@ -112,6 +116,17 @@ public class MenuGUI extends JFrame implements ActionListener {
                 deviceBtn.setBackground(Color.YELLOW);
             }
         });
+        backButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                deviceBtn.setBackground(Color.RED);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                deviceBtn.setBackground(Color.WHITE);
+            }
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                deviceBtn.setBackground(Color.YELLOW);
+            }
+        });
 
         panel.add(Box.createVerticalStrut(20)); // added vertical spacing
         panel.add(userBtn);
@@ -126,6 +141,8 @@ public class MenuGUI extends JFrame implements ActionListener {
         panel.add(Box.createVerticalStrut(20));
         panel.add(deviceBtn);
         panel.add(Box.createVerticalStrut(20));
+        panel.add(backButton);
+        panel.add(Box.createVerticalStrut(20));
 
         
         // set layout to BoxLayout with vertical alignment
@@ -138,6 +155,7 @@ public class MenuGUI extends JFrame implements ActionListener {
         productBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         deviceCategoryBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         deviceBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         
 
         add(panel);
@@ -164,6 +182,10 @@ public class MenuGUI extends JFrame implements ActionListener {
         } else if (e.getSource() == deviceBtn) {
             setVisible(false);
             new EquipmentGUI();
+        }else if(e.getSource() == backButton)
+        {
+            setVisible(false);
+            new Login();
         }
     }
 
