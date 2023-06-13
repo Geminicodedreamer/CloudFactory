@@ -6,8 +6,10 @@ import javax.swing.table.DefaultTableModel;
 
 import DataBase.EquipmentDataBase;
 import DataBase.EquipmentTypeDataBase;
+import DataBase.FactoryDataBase;
 import Model.Equipment;
 import Model.EquipmentType;
+import Model.Factory;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,7 +20,8 @@ import java.util.Vector;
 class EquipmentDialog extends JDialog implements ActionListener
 {
     private JLabel nameLabel, typeLabel, specificationLabel, borrowableLabel, switchableLabel, descriptionLabel, factoryNameLabel;
-    private JTextField nameTextField, specificationTextField, factoryNameTextField;
+    private JTextField nameTextField, specificationTextField;
+    JComboBox<String> factoryNameComboBox;
     private JComboBox<String> typeComboBox, borrowableComboBox;
     private JCheckBox switchableCheckBox;
     private JTextArea descriptionTextArea;
@@ -80,6 +83,50 @@ class EquipmentDialog extends JDialog implements ActionListener
         
         switchableCheckBox = new JCheckBox();
         switchableCheckBox.setBounds(130, 250, 30, 30);
+
+        factoryNameLabel = new JLabel("所属工厂名称：");
+        factoryNameLabel.setBounds(50, 400, 100, 30);
+        panel.add(factoryNameLabel);
+        
+        factoryNameComboBox = new JComboBox<String>();
+        factoryNameComboBox.setBounds(130, 400, 120, 30);
+        for (Factory name : FactoryDataBase.getFactories()) {
+            factoryNameComboBox.addItem(name.getName());
+        }
+        panel.add(factoryNameComboBox);   
+        borrowableComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                if(borrowableComboBox.getSelectedItem().toString().equals("是"))
+                {      
+                    if(factoryNameComboBox == null && factoryNameLabel == null)
+                    {
+                        factoryNameLabel = new JLabel("所属工厂名称：");
+                        factoryNameLabel.setBounds(50, 400, 100, 30);
+                        panel.add(factoryNameLabel);
+                        
+                        factoryNameComboBox = new JComboBox<String>();
+                        factoryNameComboBox.setBounds(130, 400, 120, 30);
+                        for (Factory name : FactoryDataBase.getFactories()) {
+                            factoryNameComboBox.addItem(name.getName());
+                        }
+                        panel.add(factoryNameComboBox);   
+                    }  
+                }
+                if(borrowableComboBox.getSelectedItem().toString().equals("否")){
+                    if(factoryNameComboBox != null && factoryNameLabel != null)
+                    {
+                        panel.remove(factoryNameLabel);
+                        panel.remove(factoryNameComboBox);
+                        factoryNameComboBox = null;
+                        factoryNameLabel = null;  
+                    }
+                }
+                panel.revalidate();
+                panel.repaint();
+            }
+        });
         panel.add(switchableCheckBox);
         
         descriptionLabel = new JLabel("设备描述：");
@@ -90,13 +137,8 @@ class EquipmentDialog extends JDialog implements ActionListener
         descriptionTextArea.setBounds(130, 300, 120, 60);
         panel.add(descriptionTextArea);
         
-        factoryNameLabel = new JLabel("所属工厂名称：");
-        factoryNameLabel.setBounds(50, 400, 100, 30);
-        panel.add(factoryNameLabel);
         
-        factoryNameTextField = new JTextField();
-        factoryNameTextField.setBounds(130, 400, 120, 30);
-        panel.add(factoryNameTextField);
+
         
         okButton = new JButton("确定");
         okButton.setBounds(100, 450, 80, 30);
@@ -121,7 +163,7 @@ class EquipmentDialog extends JDialog implements ActionListener
             String borrowable = (String)borrowableComboBox.getSelectedItem();
             boolean switchable = switchableCheckBox.isSelected();
             String description = descriptionTextArea.getText();
-            String factoryName = factoryNameTextField.getText();
+            String factoryName = factoryNameComboBox.getSelectedItem().toString();
             
             equipment = new Equipment((EquipmentDataBase.getEquipments().size() != 0)? EquipmentDataBase.getEquipments().get(EquipmentDataBase.getEquipments().size() - 1).getID() + 1 : 1,name, type, specification, borrowable, switchable, description, factoryName);
             EquipmentDataBase.addEquipment(equipment);

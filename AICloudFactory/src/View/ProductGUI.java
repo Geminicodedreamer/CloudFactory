@@ -7,6 +7,8 @@ import DataBase.EquipmentDataBase;
 import DataBase.FactoryDataBase;
 import DataBase.ProductDataBase;
 import DataBase.ProductTypeDataBase;
+import Model.Equipment;
+import Model.Factory;
 import Model.Product;
 import Model.ProductType;
 
@@ -27,10 +29,11 @@ class CreateProductDialog extends JDialog implements ActionListener{
     private JButton createButton, cancelButton;
     private JPanel panel;
     private ProductGUI parent;
-    JLabel factoryLabel;
-    JTextField factoryField;
-    JLabel deviceLabel;
-    JTextField deviceField;
+    private JLabel factoryLabel;
+    private JComboBox<String> factoryField;
+    private JLabel deviceLabel;
+    private JComboBox<String> deviceField;
+
 
     public CreateProductDialog(ProductGUI parent) {
         super(parent, "新建产品", true);
@@ -75,17 +78,25 @@ class CreateProductDialog extends JDialog implements ActionListener{
         factoryLabel.setBounds(50, 250, 100, 30);
         panel.add(factoryLabel);
 
-        factoryField = new JTextField();
+        factoryField = new JComboBox<>();
         factoryField.setBounds(150, 250, 150, 30);
+        ArrayList<Factory> factories = FactoryDataBase.getFactories();
+        for (Factory factory : factories) {
+            factoryField.addItem(factory.getName());
+        }
         panel.add(factoryField);
 
         deviceLabel = new JLabel("设备:");
         deviceLabel.setBounds(50, 300, 100, 30);
         panel.add(deviceLabel);
 
-        deviceField = new JTextField();
+        deviceField = new JComboBox<>();
         deviceField.setBounds(150, 300, 150, 30);
+        for (Equipment device : EquipmentDataBase.getEquipments()) {
+            deviceField.addItem(device.getName());
+        }
         panel.add(deviceField);
+
 
         descLabel = new JLabel("产品描述:");
         descLabel.setBounds(50, 350, 100, 30);
@@ -126,8 +137,8 @@ class CreateProductDialog extends JDialog implements ActionListener{
             String category = (String) categoryComboBox.getSelectedItem();
             String spec = specField.getText();
             String desc = descField.getText();
-            String factory = factoryField.getText();
-            String device = deviceField.getText();
+            String factory =(String) factoryField.getSelectedItem();
+            String device =(String) deviceField.getSelectedItem(); 
             if (name.isEmpty() || category.isEmpty() || spec.isEmpty() || desc.isEmpty() || factory.isEmpty() || device.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "请填写所有信息。");
                 return;
@@ -167,11 +178,13 @@ class ModifyProductDialog extends JDialog implements ActionListener{
     private JButton modifyButton, cancelButton;
     private JPanel panel;
     private ProductGUI parent;
-    JLabel factoryLabel;
-    JTextField factoryField;
-    JLabel deviceLabel;
-    JTextField deviceField;
+    private JLabel factoryLabel;
+    private JComboBox<String> factoryComboBox;
+    private JLabel deviceLabel;
+    private JTextField deviceField;
     private Product product;
+    private JComboBox<String> deviceComboBox;
+
 
     public ModifyProductDialog(ProductGUI parent, Product product) {
         super(parent, "修改产品", true);
@@ -225,17 +238,43 @@ class ModifyProductDialog extends JDialog implements ActionListener{
         factoryLabel.setBounds(50, 250, 100, 30);
         panel.add(factoryLabel);
 
-        factoryField = new JTextField(FactoryDataBase.getFactoryByID(product.getFactoryID()).getName());
-        factoryField.setBounds(150, 250, 150, 30);
-        panel.add(factoryField);
+
+        factoryComboBox = new JComboBox<>();
+        factoryComboBox.setBounds(150, 250, 150, 30);
+        ArrayList<Factory> factories = FactoryDataBase.getFactories();
+        for (Factory factory : factories) {
+            factoryComboBox.addItem(factory.getName());
+        }
+        String currentFactory = FactoryDataBase.getFactoryByID(product.getFactoryID()).getName();
+        for (int i = 0; i < factories.size(); i++) {
+            if (factories.get(i).getName().equals(currentFactory)) {
+                factoryComboBox.setSelectedIndex(i);
+                break;
+            }
+        }
+        panel.add(factoryComboBox);
+
 
         deviceLabel = new JLabel("设备:");
         deviceLabel.setBounds(50, 300, 100, 30);
         panel.add(deviceLabel);
 
-        deviceField = new JTextField(EquipmentDataBase.getEquipmentByID(product.getEquipmentID()).getName());
-        deviceField.setBounds(150, 300, 150, 30);
-        panel.add(deviceField);
+
+        deviceComboBox = new JComboBox<>();
+        deviceComboBox.setBounds(150, 300, 150, 30);
+        ArrayList<Equipment> equipments = EquipmentDataBase.getEquipments();
+        for (Equipment equipment : equipments) {
+            deviceComboBox.addItem(equipment.getName());
+        }
+        String currentEquipment = EquipmentDataBase.getEquipmentByID(product.getEquipmentID()).getName();
+        for (int i = 0; i < equipments.size(); i++) {
+            if (equipments.get(i).getName().equals(currentEquipment)) {
+                deviceComboBox.setSelectedIndex(i);
+                break;
+            }
+        }
+        panel.add(deviceComboBox);
+
 
         descLabel = new JLabel("产品描述:");
         descLabel.setBounds(50, 350, 100, 30);
@@ -276,12 +315,18 @@ class ModifyProductDialog extends JDialog implements ActionListener{
             String category = (String) categoryComboBox.getSelectedItem();
             String spec = specField.getText();
             String desc = descField.getText();
-            String factory = factoryField.getText();
-            String device = deviceField.getText();
+            String factory = factoryComboBox.getSelectedItem().toString();
+            String device = deviceComboBox.getSelectedItem().toString();
             if (name.isEmpty() || category.isEmpty() || spec.isEmpty() || desc.isEmpty() || factory.isEmpty() || device.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "请填写所有信息。");
                 return;
             }
+
+            if (EquipmentDataBase.getEquipmentByName(device).getFactory() == null || FactoryDataBase.getFactoryByName(factory).getId() != EquipmentDataBase.getEquipmentByName(device).getFactory().getId()) {
+                JOptionPane.showMessageDialog(this, "设备不是该公司租用的，不合法");
+                return;
+            }
+
             ProductType productType = ProductTypeDataBase.getProductTypeByName(category);
             Product newProduct = new Product(product.getID(), product.getProductNumber() ,name, spec , FactoryDataBase.getFactoryByName(factory).getId(),  EquipmentDataBase.getEquipmentByName(device).getID(), productType,desc);
             ProductDataBase.modifyProduct(newProduct);
