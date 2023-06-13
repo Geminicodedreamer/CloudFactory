@@ -538,8 +538,4 @@ public class UserGUI extends JFrame implements ActionListener {
             new MenuGUI();
         }
     }
-
-    public static void main(String[] args) {
-        new UserGUI();
-    }
 }
