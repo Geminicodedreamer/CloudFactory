@@ -48,7 +48,7 @@ public class FactoryDataBase {
             BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH));
             factories.clear();
             String line = reader.readLine();
-            while (line != null) {
+            while (line != null && !line.equals("")) {
                 String[] infoArray = line.split("_");
                 Factory factory = new Factory(Integer.parseInt(infoArray[0]), infoArray[1], infoArray[2], infoArray[3] , infoArray[4]);
                 factories.add(factory);

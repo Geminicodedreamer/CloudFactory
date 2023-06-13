@@ -465,10 +465,10 @@ public class EquipmentGUI extends JFrame {
                 rowData.add(equipment.getSpecification());
                 rowData.add(String.valueOf(equipment.isSwitchable()));
                 rowData.add(equipment.getDescription());
-                if (equipment.getFactory() == null) {
+                if (equipment.isBorrowable().equals("否")) {
                     rowData.add("未被租用");
                     rowData.add("");
-                } else if (equipment.getFactory().getName().equals("工厂设备")) {
+                } else if (equipment.isBorrowable().equals("工厂设备")) {
                     rowData.add("工厂设备");
                     rowData.add("");
                 } else {
@@ -503,10 +503,10 @@ searchByTypeButton.addActionListener(new ActionListener() {
             rowData.add(equipment.getSpecification());
             rowData.add(String.valueOf(equipment.isSwitchable()));
             rowData.add(equipment.getDescription());
-            if (equipment.getFactory() == null) {
+            if (equipment.isBorrowable().equals("否")) {
                 rowData.add("未被租用");
                 rowData.add("");
-            } else if (equipment.getFactory().getName().equals("工厂设备")) {
+            } else if (equipment.isBorrowable().equals("工厂设备")) {
                 rowData.add("工厂设备");
                 rowData.add("");
             } else {
@@ -536,10 +536,10 @@ searchByTypeButton.addActionListener(new ActionListener() {
                         rowData.add("关机");
                     }
                     rowData.add(equipment.getDescription());
-                    if (equipment.getFactory() == null) {
+                    if (equipment.isBorrowable().equals("否")) {
                         rowData.add("未被租用");
                         rowData.add("");
-                    } else if (equipment.getFactory().getName().equals("工厂设备")) {
+                    } else if (equipment.isBorrowable().equals("工厂设备")) {
                         rowData.add("工厂设备");
                         rowData.add("");
                     } else {
@@ -559,10 +559,10 @@ searchByTypeButton.addActionListener(new ActionListener() {
         rowData.add(equipment.getSpecification());
         rowData.add(String.valueOf(equipment.isSwitchable()));
         rowData.add(equipment.getDescription());
-        if (equipment.getFactory() == null) {
+        if (equipment.isBorrowable().equals("否")) {
             rowData.add("未被租用");
             rowData.add("");
-        } else if (equipment.getFactory().getName().equals("工厂设备")) {
+        } else if (equipment.isBorrowable().equals("工厂设备")) {
             rowData.add("工厂设备");
             rowData.add("");
         } else {
@@ -609,10 +609,10 @@ searchByTypeButton.addActionListener(new ActionListener() {
         rowData.add(equipment.getSpecification());
         rowData.add(String.valueOf(equipment.isSwitchable()));
         rowData.add(equipment.getDescription());
-        if (equipment.getFactory() == null) {
+        if (equipment.isBorrowable().equals("否")) {
             rowData.add("未被租用");
             rowData.add("");
-        } else if (equipment.getFactory().getName().equals("工厂设备")) {
+        } else if (equipment.isBorrowable().equals("工厂设备")) {
             rowData.add("工厂设备");
             rowData.add("");
         } else {
@@ -650,10 +650,10 @@ searchByTypeButton.addActionListener(new ActionListener() {
         rowData.add(equipment.getSpecification());
         rowData.add(String.valueOf(equipment.isSwitchable()));
         rowData.add(equipment.getDescription());
-        if (equipment.getFactory() == null) {
+        if (equipment.isBorrowable().equals("否")) {
             rowData.add("未被租用");
             rowData.add("");
-        } else if (equipment.getFactory().getName().equals("工厂设备")) {
+        } else if (equipment.isBorrowable().equals("工厂设备")) {
             rowData.add("工厂设备");
             rowData.add("");
         } else {
@@ -684,10 +684,10 @@ searchByTypeButton.addActionListener(new ActionListener() {
         rowData.add(equipment.getSpecification());
         rowData.add(String.valueOf(equipment.isSwitchable()));
         rowData.add(equipment.getDescription());
-        if (equipment.getFactory() == null) {
+        if (equipment.isBorrowable().equals("否")) {
             rowData.add("未被租用");
             rowData.add("");
-        } else if (equipment.getFactory().getName().equals("工厂设备")) {
+        } else if (equipment.isBorrowable().equals("工厂设备")) {
             rowData.add("工厂设备");
             rowData.add("");
         } else {
@@ -697,9 +697,6 @@ searchByTypeButton.addActionListener(new ActionListener() {
         tableModel.addRow(rowData);
     }
 
-    public static void main(String[] args) {
-        new EquipmentGUI();
-    }
 }
                     
 
