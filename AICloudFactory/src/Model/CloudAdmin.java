@@ -10,7 +10,8 @@ public class CloudAdmin extends User{
    
     public CloudAdmin(String account, String password, String role, String name, String phoneNumber, int id , String factoryName , String factoryintroduction) {
         super(account, password, role, name, phoneNumber, id);
-        UserDataBase.addUser(this);
+        if(UserDataBase.getUserById(id) == null) UserDataBase.addUser(this);
+        else UserDataBase.updateUser(this);
         setFactory(factoryName, factoryintroduction, name);
     }
  

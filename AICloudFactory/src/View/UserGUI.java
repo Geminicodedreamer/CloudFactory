@@ -1,10 +1,13 @@
 package View;
 
+import javax.lang.model.util.ElementScanner14;
 import javax.swing.*;
-import javax.swing.plaf.MenuItemUI;
 import javax.swing.table.DefaultTableModel;
 
+import DataBase.FactoryDataBase;
 import DataBase.UserDataBase;
+import Model.CloudAdmin;
+import Model.Factory;
 import Model.User;
 
 import java.awt.*;
@@ -24,12 +27,16 @@ class newuser extends JDialog implements ActionListener{
     private JComboBox<String> roleComboBox ;
     private JButton confirmButton ;
     private JButton cancelButton ;
+    JLabel factoryNameLabel;
+    JTextField factoryNameField;
+    JTextField factoryDescriptionField;
+    JLabel factoryDescriptionLabel;
     public newuser(Frame parent)
     {
         super(parent ,"填入用户基本信息",true);
-        setSize(400, 400);
+        setSize(400, 500);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         panel = new JPanel();
         panel.setLayout(null);
         add(panel);
@@ -67,13 +74,72 @@ class newuser extends JDialog implements ActionListener{
         roleComboBox.setBounds(150, 200, 150, 30);
         panel.add(roleComboBox);
 
+        factoryNameLabel = new JLabel("工厂名称:");
+        factoryNameLabel.setBounds(50, 250, 80, 30);
+        panel.add(factoryNameLabel);
+
+        factoryNameField = new JTextField();
+        factoryNameField.setBounds(150, 250, 150, 30);
+        panel.add(factoryNameField);
+
+        factoryDescriptionLabel = new JLabel("工厂描述:");
+        factoryDescriptionLabel.setBounds(50, 300, 80, 30);
+        panel.add(factoryDescriptionLabel);
+
+        factoryDescriptionField = new JTextField();
+        factoryDescriptionField.setBounds(150, 300, 150, 30);
+        panel.add(factoryDescriptionField);
+        roleComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String type = (String)roleComboBox.getSelectedItem();
+                if (type.equals("云工厂")) {
+                    if(factoryNameLabel == null && factoryNameField == null && factoryDescriptionLabel == null && factoryDescriptionField == null)
+                    {
+                    factoryNameLabel = new JLabel("工厂名称:");
+                    factoryNameLabel.setBounds(50, 250, 80, 30);
+                    panel.add(factoryNameLabel);
+
+                    factoryNameField = new JTextField();
+                    factoryNameField.setBounds(150, 250, 150, 30);
+                    panel.add(factoryNameField);
+
+                    factoryDescriptionLabel = new JLabel("工厂描述:");
+                    factoryDescriptionLabel.setBounds(50, 300, 80, 30);
+                    panel.add(factoryDescriptionLabel);
+
+                    factoryDescriptionField = new JTextField();
+                    factoryDescriptionField.setBounds(150, 300, 150, 30);
+                    panel.add(factoryDescriptionField);
+
+                    }
+                } 
+                if (type.equals("经销商")) {
+                    if(factoryNameLabel != null && factoryNameField != null && factoryDescriptionLabel != null && factoryDescriptionField != null)
+                    {
+                        panel.remove(factoryNameLabel);
+                    panel.remove(factoryNameField);
+                    panel.remove(factoryDescriptionLabel);
+                    panel.remove(factoryDescriptionField);
+                    factoryNameLabel = null;
+                    factoryNameField=null;
+                    factoryDescriptionLabel=null;
+                    factoryDescriptionField=null;
+                    }
+                }
+                panel.revalidate();
+                panel.repaint();
+            }
+        });
+
+
         confirmButton = new JButton("确认");
-        confirmButton.setBounds(100, 250, 80, 30);
+        confirmButton.setBounds(100, 350, 80, 30);
         confirmButton.addActionListener(this);
         panel.add(confirmButton);
 
         cancelButton = new JButton("取消");
-        cancelButton.setBounds(200, 250, 80, 30);
+        cancelButton.setBounds(200, 350, 80, 30);
         cancelButton.addActionListener(this);
         panel.add(cancelButton);
         setVisible(true);
@@ -91,14 +157,202 @@ class newuser extends JDialog implements ActionListener{
                 JOptionPane.showMessageDialog(frame, "请填写完整信息。");
                 return;
             }
-            User newUser = new User( account, "", role, name, phoneNumber , (UserDataBase.getUsers().size()!= 0) ? UserDataBase.getUsers().get(UserDataBase.getUsers().size() - 1).getId() + 1 : 1);
-            UserDataBase.addUser(newUser);
+            if(role.equals("云工厂")){
+                String factoryName = factoryNameField.getText();
+                    String factoryIntro = factoryDescriptionField.getText();
+                        new CloudAdmin(account, "",role,name , phoneNumber , (UserDataBase.getUsers().size() != 0) ? UserDataBase.getUsers().get(UserDataBase.getUsers().size() - 1).getId() + 1 : 1,factoryName, factoryIntro);
+                    }else{
+                        User user = new User(account, "",role,name , phoneNumber , (UserDataBase.getUsers().size() != 0) ? UserDataBase.getUsers().get(UserDataBase.getUsers().size() - 1).getId() + 1 : 1);
+                        UserDataBase.addUser(user);
+                    }
             dispose();
         } else if(e.getSource() == cancelButton) {
             dispose();
         }
     }
 }
+
+
+class ModifyUser extends JDialog implements ActionListener {
+    private User selectedUser;
+    private JLabel factoryNameLabel;
+    private JTextField factoryNameField;
+    private JTextField factoryDescriptionField;
+    private JLabel factoryDescriptionLabel;
+    private JComboBox<String> roleComboBox;
+    private JPanel panel;
+    private JButton confirmButton;
+    private JButton cancelButton;
+    private JLabel accountLabel ;
+    private JTextField accountField;
+    private JLabel nameLabel ;
+    private JTextField nameField;
+    private JLabel phoneNumberLabel;
+    private JTextField phoneNumberField;
+    private JLabel roleLabel;
+
+    public ModifyUser(JFrame parent, User selectedUser) {
+        super(parent , "修改用户信息" , true);
+        this.selectedUser = selectedUser;
+        setSize(400, 500);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        panel = new JPanel();
+        panel.setLayout(null);
+        add(panel);
+
+        accountLabel = new JLabel("用户名:");
+        accountLabel.setBounds(50, 50, 80, 30);
+        panel.add(accountLabel);
+
+        accountField = new JTextField(selectedUser.getAccount());
+        accountField.setBounds(150, 50, 150, 30);
+        panel.add(accountField);
+
+        nameLabel = new JLabel("姓名:");
+        nameLabel.setBounds(50, 100, 80, 30);
+        panel.add(nameLabel);
+
+        nameField = new JTextField(selectedUser.getName());
+        nameField.setBounds(150, 100, 150, 30);
+        panel.add(nameField);
+
+        phoneNumberLabel = new JLabel("电话号码:");
+        phoneNumberLabel.setBounds(50, 150, 80, 30);
+        panel.add(phoneNumberLabel);
+
+        phoneNumberField = new JTextField(selectedUser.getPhoneNumber());
+        phoneNumberField.setBounds(150, 150, 150, 30);
+        panel.add(phoneNumberField);
+
+        roleLabel = new JLabel("用户类型:");
+        roleLabel.setBounds(50, 200, 80, 30);
+        panel.add(roleLabel);
+
+        String[] roles = { "云工厂", "经销商" };
+        roleComboBox = new JComboBox<>(roles);
+        roleComboBox.setSelectedItem(selectedUser.getRole());
+        roleComboBox.setBounds(150, 200, 150, 30);
+        roleComboBox.addActionListener(this);
+        panel.add(roleComboBox);
+
+        factoryNameLabel = null;
+        factoryNameField=null;
+        factoryDescriptionLabel=null;
+        factoryDescriptionField=null;
+
+        if (selectedUser.getRole().equals("云工厂")) {
+            if(factoryNameLabel == null && factoryNameField == null && factoryDescriptionLabel == null && factoryDescriptionField == null)
+            {
+                Factory factory = FactoryDataBase.getFactoryByOwnerName(selectedUser.getName());
+
+                factoryNameLabel = new JLabel("工厂名称:");
+                factoryNameLabel.setBounds(50, 250, 80, 30);
+                panel.add(factoryNameLabel);
+
+                factoryNameField = new JTextField(factory.getName());
+                factoryNameField.setBounds(150, 250, 150, 30);
+                panel.add(factoryNameField);
+
+                factoryDescriptionLabel = new JLabel("工厂描述:");
+                factoryDescriptionLabel.setBounds(50, 300, 80, 30);
+                panel.add(factoryDescriptionLabel);
+
+                factoryDescriptionField = new JTextField(factory.getIntroduction());
+                factoryDescriptionField.setBounds(150, 300, 150, 30);
+                panel.add(factoryDescriptionField);
+
+            }
+        } 
+
+        confirmButton = new JButton("确认");
+        confirmButton.setBounds(100, 350, 80, 30);
+        confirmButton.addActionListener(this);
+        panel.add(confirmButton);
+
+        cancelButton = new JButton("取消");
+        cancelButton.setBounds(200, 350, 80, 30);
+        cancelButton.addActionListener(this);
+        panel.add(cancelButton);
+
+        setVisible(true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == roleComboBox) {
+            String type = (String)roleComboBox.getSelectedItem();
+            if (type.equals("云工厂")) {
+                if(factoryNameLabel == null && factoryNameField == null && factoryDescriptionLabel == null && factoryDescriptionField == null)
+                {
+                factoryNameLabel = new JLabel("工厂名称:");
+                factoryNameLabel.setBounds(50, 250, 80, 30);
+                panel.add(factoryNameLabel);
+
+                factoryNameField = new JTextField();
+                factoryNameField.setBounds(150, 250, 150, 30);
+                panel.add(factoryNameField);
+
+                factoryDescriptionLabel = new JLabel("工厂描述:");
+                factoryDescriptionLabel.setBounds(50, 300, 80, 30);
+                panel.add(factoryDescriptionLabel);
+
+                factoryDescriptionField = new JTextField();
+                factoryDescriptionField.setBounds(150, 300, 150, 30);
+                panel.add(factoryDescriptionField);
+
+                }
+            } 
+            if (type.equals("经销商")) {
+                if(factoryNameLabel != null && factoryNameField != null && factoryDescriptionLabel != null && factoryDescriptionField != null)
+                {
+                    panel.remove(factoryNameLabel);
+                panel.remove(factoryNameField);
+                panel.remove(factoryDescriptionLabel);
+                panel.remove(factoryDescriptionField);
+                factoryNameLabel = null;
+                factoryNameField=null;
+                factoryDescriptionLabel=null;
+                factoryDescriptionField=null;
+                }
+            }
+            panel.revalidate();
+            panel.repaint();
+        } else if(e.getSource() == confirmButton) {
+            String account = accountField.getText();
+            String name = nameField.getText();
+            String phoneNumber = phoneNumberField.getText();
+            String role = (String) roleComboBox.getSelectedItem();
+            selectedUser.setAccount(account);
+            selectedUser.setName(name);
+            selectedUser.setPhoneNumber(phoneNumber);
+            selectedUser.setRole(role);
+
+            if(role.equals("云工厂")){
+                boolean isExist = false;
+                for(Factory factory : FactoryDataBase.getFactories()){
+                    if(factory.getOwner().getId() == selectedUser.getId()){
+                        isExist = true;
+                        break;
+                    }
+                }
+                if(!isExist){
+                    new CloudAdmin(account, selectedUser.getPassword(),role,name , phoneNumber ,selectedUser.getId(),factoryNameField.getText(), factoryDescriptionField.getText());
+                }
+            }else if(role.equals("经销商")){
+                FactoryDataBase.removeFactoryByOwnerid(selectedUser.getId());
+                User user = new User(account, selectedUser.getPassword(),role,name , phoneNumber , selectedUser.getId());
+                UserDataBase.updateUser(user);
+            }
+            dispose();
+        }else if(e.getSource() == cancelButton){
+            dispose();
+        }
+    }
+
+}
+
+
 public class UserGUI extends JFrame implements ActionListener {
     private static final long serialVersionUID = 1L;
     private JPanel panel;
@@ -231,14 +485,14 @@ public class UserGUI extends JFrame implements ActionListener {
             return;
         }
         int option = JOptionPane.showConfirmDialog(this, "你确定要删除所选用户吗？");
-        new UserDataBase();
         if (option == JOptionPane.YES_OPTION) {
             for (int i = selectedRows.length - 1; i >= 0; i--) {
                 int id = (int) table.getValueAt(selectedRows[i], 0);
                 User user = UserDataBase.getUserById(id);
-                if (user != null) {
-                    UserDataBase.removeUser(user);
+                if(user.getRole().equals("云工厂")){
+                    FactoryDataBase.removeFactoryByOwnerid(id);
                 }
+                UserDataBase.removeUserbyid(id);
                 model.removeRow(selectedRows[i]);
             }
         }
@@ -256,81 +510,8 @@ public class UserGUI extends JFrame implements ActionListener {
             JOptionPane.showMessageDialog(this, "未找到该用户。");
             return;
         }
-        JFrame frame = new JFrame("修改用户信息");
-        frame.setSize(400, 400);
-        frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        JPanel panel = new JPanel();
-        panel.setLayout(null);
-        frame.add(panel);
-
-        JLabel accountLabel = new JLabel("用户名:");
-        accountLabel.setBounds(50, 50, 80, 30);
-        panel.add(accountLabel);
-
-        JTextField accountField = new JTextField(selectedUser.getAccount());
-        accountField.setBounds(150, 50, 150, 30);
-        panel.add(accountField);
-
-        JLabel nameLabel = new JLabel("姓名:");
-        nameLabel.setBounds(50, 100, 80, 30);
-        panel.add(nameLabel);
-
-        JTextField nameField = new JTextField(selectedUser.getName());
-        nameField.setBounds(150, 100, 150, 30);
-        panel.add(nameField);
-
-        JLabel phoneNumberLabel = new JLabel("电话号码:");
-        phoneNumberLabel.setBounds(50, 150, 80, 30);
-        panel.add(phoneNumberLabel);
-
-        JTextField phoneNumberField = new JTextField(selectedUser.getPhoneNumber());
-        phoneNumberField.setBounds(150, 150, 150, 30);
-        panel.add(phoneNumberField);
-
-        JLabel roleLabel = new JLabel("用户类型:");
-        roleLabel.setBounds(50, 200, 80, 30);
-        panel.add(roleLabel);
-
-        String[] roles = { "云工厂", "经销商" };
-        JComboBox<String> roleComboBox = new JComboBox<>(roles);
-        roleComboBox.setSelectedItem(selectedUser.getRole());
-        roleComboBox.setBounds(150, 200, 150, 30);
-        panel.add(roleComboBox);
-
-        JButton confirmButton = new JButton("确认");
-        confirmButton.setBounds(100, 250, 80, 30);
-        confirmButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String account = accountField.getText();
-                String name = nameField.getText();
-                String phoneNumber = phoneNumberField.getText();
-                String role = (String) roleComboBox.getSelectedItem();
-                selectedUser.setAccount(account);
-                selectedUser.setName(name);
-                selectedUser.setPhoneNumber(phoneNumber);
-                selectedUser.setRole(role);
-                UserDataBase.updateUser(selectedUser);
-                showUsers();
-                frame.dispose();
-            }
-        });
-
-        panel.add(confirmButton);
-
-        JButton cancelButton = new JButton("取消");
-        cancelButton.setBounds(200, 250, 80, 30);
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                frame.dispose();
-            }
-        });
-        panel.add(cancelButton);
-
-        frame.setVisible(true);
-
+        new ModifyUser(this, selectedUser);
+        resetTable();
     }
 
     public void resetTable() {
@@ -356,5 +537,9 @@ public class UserGUI extends JFrame implements ActionListener {
             dispose();
             new MenuGUI();
         }
+    }
+
+    public static void main(String[] args) {
+        new UserGUI();
     }
 }

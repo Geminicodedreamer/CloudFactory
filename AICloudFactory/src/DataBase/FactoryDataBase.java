@@ -13,11 +13,13 @@ public class FactoryDataBase {
     private static final String FILE_PATH = "C:\\Users\\DELL\\Desktop\\vscodejava\\Work\\AICloudFactory\\Data\\factories.dat";
 
     public static void addFactory(Factory factory) {
+        loadDatabase();
         factories.add(factory);
         updateDatabase();
     }
 
     public static void removeFactory(Factory factory) {
+        loadDatabase();
         factories.remove(factory);
         updateDatabase();
     }
@@ -58,6 +60,16 @@ public class FactoryDataBase {
         }
     }
 
+    public static void removeFactoryByOwnerid(int id) {
+        loadDatabase();
+        for (Factory factory : factories) {
+            if (factory.getOwner().getId() == id) {
+                factories.remove(factory);
+                updateDatabase();
+                return;
+            }
+        }
+    }
 
 
 
@@ -84,6 +96,7 @@ public static Factory getFactoryByOwnerName(String ownerName) {
 
 
     public static void updateFactoryStatus(int id, String status) {
+        loadDatabase();
         for (Factory factory : factories) {
             if (factory.getId() == id) {
                 factory.setStatus(status);

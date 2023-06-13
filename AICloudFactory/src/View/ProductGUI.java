@@ -132,6 +132,21 @@ class CreateProductDialog extends JDialog implements ActionListener{
                 JOptionPane.showMessageDialog(this, "请填写所有信息。");
                 return;
             }
+        
+            if (FactoryDataBase.getFactoryByName(factory) == null) {
+                JOptionPane.showMessageDialog(this, "请输入合法的工厂");
+                return;
+            }
+            if (EquipmentDataBase.getEquipmentByName(device) == null) {
+                JOptionPane.showMessageDialog(this, "请输入合法的设备");
+                return;
+            }
+            
+            if (EquipmentDataBase.getEquipmentByName(device).getFactory() == null || FactoryDataBase.getFactoryByName(factory).getId() != EquipmentDataBase.getEquipmentByName(device).getFactory().getId()) {
+                JOptionPane.showMessageDialog(this, "设备不是该公司租用的，不合法");
+                return;
+            }
+            
             ProductType productType = ProductTypeDataBase.getProductTypeByName(category);
             Product product = new Product((ProductDataBase.getProducts().size() != 0)?ProductDataBase.getProducts().get(ProductDataBase.getProducts().size() - 1).getID() + 1 : 1 , name, spec , FactoryDataBase.getFactoryByName(factory).getId(),  EquipmentDataBase.getEquipmentByName(device).getID(), productType,desc);
             ProductDataBase.addProduct(product);

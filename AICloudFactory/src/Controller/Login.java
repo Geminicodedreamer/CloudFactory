@@ -27,7 +27,6 @@ class RegisterGUI extends JFrame{
     private JTextField nameField;
     private JTextField phoneNumberField;
     private JTextField factoryNameField;
-    private JPanel registerTypePanel;
     private JRadioButton cloudFactoryRadioButton;
     private JRadioButton dealerRadioButton;
     private ButtonGroup registerTypeGroup;

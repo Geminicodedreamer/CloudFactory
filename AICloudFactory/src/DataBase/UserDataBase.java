@@ -14,11 +14,13 @@ public class UserDataBase {
     private static final String FILE_PATH = "C:\\Users\\DELL\\Desktop\\vscodejava\\Work\\AICloudFactory\\Data\\Users.dat";
 
     public static void addUser(User user) {
+        loadDatabase();
         users.add(user);
         updateDatabase();
     }
 
     public static void removeUser(User user) {
+        loadDatabase();
         users.remove(user);
         updateDatabase();
     }
@@ -86,6 +88,7 @@ public class UserDataBase {
     }
 
     public static void updateUser(User selectedUser) {
+        loadDatabase();
         for (int i = 0; i < users.size(); i++) {
             if (users.get(i).getId() == selectedUser.getId()) {
                 users.set(i, selectedUser);
@@ -105,5 +108,17 @@ public class UserDataBase {
         }
         return null;
     }
+
+    public static void removeUserbyid(int id) {
+        loadDatabase();
+        for (int i = 0; i < users.size(); i++) {
+            if (users.get(i).getId() == id) {
+                users.remove(i);
+                updateDatabase();
+                break;
+            }
+        }
+    }
+
 
 }

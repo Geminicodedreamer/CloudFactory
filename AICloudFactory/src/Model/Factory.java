@@ -18,8 +18,6 @@ public class Factory {
         setId(id);
         setName(name);
         setIntroduction(introduction);
-        new UserDataBase();
-        UserDataBase.loadDatabase();
         setOwner(UserDataBase.getUserByName(ownername));
         setStatus(status);
         employees = new ArrayList<Employee>();
