@@ -306,7 +306,6 @@ public class Login extends JFrame implements ActionListener {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if(captchaField.getText().equals(key.get(image))){
-                        System.out.println(user.getRole());
                         if(user.getRole().equals("系统管理员")){new MenuGUI();}
                         else if(user.getRole().equals("云工厂")) { new CloudUserGUI(user);}
                         else{ 

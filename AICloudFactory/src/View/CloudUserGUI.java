@@ -403,7 +403,7 @@ public class CloudUserGUI extends JFrame{
                 rowData.add("");
             } else if (equipment.isBorrowable().equals("工厂设备")) {
                 rowData.add("工厂设备");
-                rowData.add("");
+                rowData.add(equipment.getFactory().getName());
             } else {
                 rowData.add("已被租用");
                 rowData.add(equipment.getFactory().getName());
