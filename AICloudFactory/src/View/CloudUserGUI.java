@@ -56,7 +56,7 @@ class rentEquipmentGUI extends JDialog implements ActionListener
             rowData[i][0] = equipment.getID();
             rowData[i][1] = equipment.getName();
             rowData[i][2] = equipment.getCode();
-            rowData[i][3] = equipment.getType();
+            rowData[i][3] = equipment.getType().getName();
             rowData[i][4] = equipment.getSpecification();
             rowData[i][5] = equipment.isSwitchable()?"开机":"关机";
             rowData[i][6] = equipment.getDescription();

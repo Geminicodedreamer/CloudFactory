@@ -21,13 +21,13 @@ class EquipmentDialog extends JDialog implements ActionListener
 {
     private JLabel nameLabel, typeLabel, specificationLabel, borrowableLabel, switchableLabel, descriptionLabel, factoryNameLabel;
     private JTextField nameTextField, specificationTextField;
-    JComboBox<String> factoryNameComboBox;
+    private JComboBox<String> factoryNameComboBox;
     private JComboBox<String> typeComboBox, borrowableComboBox;
     private JCheckBox switchableCheckBox;
     private JTextArea descriptionTextArea;
     private JButton okButton, cancelButton;
     private JPanel panel;
-    Equipment equipment;
+    private Equipment equipment;
     public EquipmentDialog(JFrame parent)
     {
         super(parent, "新建设备", true);
@@ -68,7 +68,7 @@ class EquipmentDialog extends JDialog implements ActionListener
         specificationTextField.setBounds(130, 150, 150, 30);
         panel.add(specificationTextField);
         
-        borrowableLabel = new JLabel("是否可借用：");
+        borrowableLabel = new JLabel("是否已借用：");
         borrowableLabel.setBounds(50, 200, 80, 30);
         panel.add(borrowableLabel);
         
@@ -162,9 +162,13 @@ class EquipmentDialog extends JDialog implements ActionListener
             String specification = specificationTextField.getText();
             String borrowable = (String)borrowableComboBox.getSelectedItem();
             boolean switchable = switchableCheckBox.isSelected();
-            String description = descriptionTextArea.getText();
-            String factoryName = factoryNameComboBox.getSelectedItem().toString();
-            
+
+            String description = "";
+            String factoryName = "";
+            if(borrowableComboBox.getSelectedItem().toString().equals("是")){
+                description = descriptionTextArea.getText();
+                factoryName = factoryNameComboBox.getSelectedItem().toString();
+            }
             equipment = new Equipment((EquipmentDataBase.getEquipments().size() != 0)? EquipmentDataBase.getEquipments().get(EquipmentDataBase.getEquipments().size() - 1).getID() + 1 : 1,name, type, specification, borrowable, switchable, description, factoryName);
             EquipmentDataBase.addEquipment(equipment);
             dispose();
