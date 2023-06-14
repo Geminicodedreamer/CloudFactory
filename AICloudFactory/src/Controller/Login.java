@@ -12,6 +12,9 @@ import View.MenuGUI;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 
 class RegisterGUI extends JFrame{
@@ -218,10 +221,23 @@ public class Login extends JFrame implements ActionListener {
     private JButton loginButton;
     private JButton registerButton;
     private int tryTimes = 3;
+    private HashMap<String , String> key = new HashMap<String ,String>(){{
+            put("C:\\Users\\DELL\\Desktop\\vscodejava\\Work\\AICloudFactory\\img\\8hvjr.png" , "8hvjr");
+            put("C:\\Users\\DELL\\Desktop\\vscodejava\\Work\\AICloudFactory\\img\\95inb.png","95inb");
+            put("C:\\Users\\DELL\\Desktop\\vscodejava\\Work\\AICloudFactory\\img\\748em.png","748em");
+            put("C:\\Users\\DELL\\Desktop\\vscodejava\\Work\\AICloudFactory\\img\\xp8x2.png","xp8x2");
+            put("C:\\Users\\DELL\\Desktop\\vscodejava\\Work\\AICloudFactory\\img\\xt17y.png","xt17y");
+        }}; ;
+    private HashMap<Integer , String> img = new HashMap<Integer , String>() {{
+            put(1 , "C:\\Users\\DELL\\Desktop\\vscodejava\\Work\\AICloudFactory\\img\\8hvjr.png");
+            put(2 , "C:\\Users\\DELL\\Desktop\\vscodejava\\Work\\AICloudFactory\\img\\95inb.png");
+            put(3 , "C:\\Users\\DELL\\Desktop\\vscodejava\\Work\\AICloudFactory\\img\\748em.png");
+            put(4 , "C:\\Users\\DELL\\Desktop\\vscodejava\\Work\\AICloudFactory\\img\\xp8x2.png");
+            put(5 , "C:\\Users\\DELL\\Desktop\\vscodejava\\Work\\AICloudFactory\\img\\xt17y.png");
+        }};;
 
     public Login() {
         super("登录");
-        
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridLayout(4, 1));
 
@@ -276,12 +292,39 @@ public class Login extends JFrame implements ActionListener {
                     JOptionPane.showMessageDialog(this, "密码错误，您还有" + tryTimes + "次尝试机会！", "错误", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
-                setVisible(false);
-                if(user.getRole().equals("系统管理员")){new MenuGUI();}
-                else if(user.getRole().equals("云工厂")) { new CloudUserGUI(user);}
-                else{ JOptionPane.showMessageDialog(this, "登陆成功！", "成功", JOptionPane.INFORMATION_MESSAGE);
-                    dispose();
+                JDialog jDialog = new JDialog(this,"验证码登录",true);
+                jDialog.setSize(500, 150);
+                JPanel captchaPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+                JLabel captchaLabel = new JLabel();
+                String image = img.get(new Integer(new Random().nextInt(5) + 1));
+                captchaLabel.setIcon(new ImageIcon(image));
+                captchaPanel.add(captchaLabel);
+                JTextField captchaField = new JTextField(10);
+                captchaPanel.add(captchaField);
+                JButton captchaButton = new JButton("确认");
+                captchaButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if(captchaField.getText().equals(key.get(image))){
+                        System.out.println(user.getRole());
+                        if(user.getRole().equals("系统管理员")){new MenuGUI();}
+                        else if(user.getRole().equals("云工厂")) { new CloudUserGUI(user);}
+                        else{ 
+                            JOptionPane.showMessageDialog(jDialog, "登陆成功！", "成功", JOptionPane.INFORMATION_MESSAGE); 
+                        }
+                        setVisible(false);
+                        dispose();  
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(jDialog, "验证码错误,请重新登录", "错误", JOptionPane.ERROR_MESSAGE);             
+                    }
+                    jDialog.setVisible(false);
+                        jDialog.dispose();
                 }
+                });
+                captchaPanel.add(captchaButton);
+                jDialog.add(captchaPanel); 
+                jDialog.setVisible(true);
             }
         } else if (e.getSource() == registerButton) {
             new RegisterGUI();
@@ -289,4 +332,3 @@ public class Login extends JFrame implements ActionListener {
         }
     }
 }
-
