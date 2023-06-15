@@ -8,7 +8,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import DataBase.EquipmentDataBase;
 import DataBase.EquipmentTypeDataBase;
+import DataBase.ProductDataBase;
+import Model.Equipment;
 import Model.EquipmentType;
 
 public class EquipmentTypeGUI extends JFrame implements ActionListener {
@@ -130,6 +133,8 @@ public class EquipmentTypeGUI extends JFrame implements ActionListener {
             if (option == JOptionPane.YES_OPTION) {
                 String equipmentTypeName = (String) tableModel.getValueAt(selectedRow, 1);
                 EquipmentType equipmentType = EquipmentTypeDataBase.getEquipmentTypeByName(equipmentTypeName);
+                ProductDataBase.removeProductbyEquipmentType(equipmentType);
+                EquipmentDataBase.removeEquipmentbyequipmenttype(equipmentType);
                 EquipmentTypeDataBase.removeEquipmentType(equipmentType);
                 tableModel.removeRow(selectedRow);
             }
@@ -147,7 +152,11 @@ public class EquipmentTypeGUI extends JFrame implements ActionListener {
             String equipmentTypeName = JOptionPane.showInputDialog(this, "请输入新的设备类型名称");
             if (equipmentTypeName != null && !equipmentTypeName.equals("")) {
                 EquipmentType equipmentType = EquipmentTypeDataBase.getEquipmentTypeByName(equipmentTypename);
+                EquipmentType newequipmentType = new EquipmentType(equipmentType.getID(), equipmentTypeName);
+                EquipmentDataBase.modifyEquipmentbyequipmenttype(newequipmentType);
                 EquipmentTypeDataBase.modifyEquipmentType(equipmentType, equipmentTypeName);
+                ArrayList<Equipment> equipment = EquipmentDataBase.getEquipmentByEquipmentType(newequipmentType);
+                ProductDataBase.modifyProductEquipment(equipment);
                 tableModel.setValueAt(equipmentTypeName, selectedRow, 1);
             }
         } else {

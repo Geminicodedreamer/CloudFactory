@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import DataBase.ProductDataBase;
 import DataBase.ProductTypeDataBase;
 import Model.ProductType;
 
@@ -130,6 +131,7 @@ public class ProductTypeGUI extends JFrame implements ActionListener {
             if (option == JOptionPane.YES_OPTION) {
                 String productTypeName = (String) tableModel.getValueAt(selectedRow, 1);
                 ProductType productType = ProductTypeDataBase.getProductTypeByName(productTypeName);
+                ProductDataBase.removeProductbyproducttype(productType.getID());
                 ProductTypeDataBase.removeProductType(productType);
                 tableModel.removeRow(selectedRow);
             }
@@ -147,7 +149,9 @@ public class ProductTypeGUI extends JFrame implements ActionListener {
             String productTypeName = JOptionPane.showInputDialog(this, "请输入新的产品类型名称");
             if (productTypeName != null && !productTypeName.equals("")) {
                 ProductType productType = ProductTypeDataBase.getProductTypeByName(productTypename);
-                ProductTypeDataBase.modifyProductType(productType, productTypeName);
+                ProductType newpeProductType = new ProductType(productType.getID(), productTypeName);
+                ProductDataBase.modifyProductbyproducttype(newpeProductType);
+                ProductTypeDataBase.modifyProductType(newpeProductType);      
                 tableModel.setValueAt(productTypeName, selectedRow, 1);
             }
         } else {

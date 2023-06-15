@@ -35,9 +35,7 @@ public class Product {
         setProductNumber();
         setProductName(productName);
         setProductCategory(productCategory);
-        new FactoryDataBase();
         setFactory(FactoryDataBase.getFactoryByID(factoryID));
-        new EquipmentDataBase();
         setEquipment(EquipmentDataBase.getEquipmentByID(equipmentID));
         setProductType(productType);
         setProductDescription(productDescription);

@@ -8,7 +8,11 @@ import java.io.ObjectOutputStream;
 import java.time.Period;
 import java.util.ArrayList;
 
+import Model.Equipment;
+import Model.EquipmentType;
+import Model.Factory;
 import Model.Product;
+import Model.ProductType;
 
 public class ProductDataBase {
     private static ArrayList<Product> products = new ArrayList<Product>();
@@ -117,6 +121,95 @@ public class ProductDataBase {
         products.get(idx).setEquipment(newProduct.getEquipment());
         products.get(idx).setProductType(newProduct.getProductType());
         products.get(idx).setProductDescription(newProduct.getProductDescription());
+        updateDatabase();
+    }
+
+    public static void removeProductbyfactoryid(int id) {
+        loadDatabase();
+        for(int i = 0 ; i < products.size() ;  i++)
+        {
+            if(products.get(i).getFactory().getId() == id)
+            {
+                products.remove(i);
+            }
+        }
+        updateDatabase();
+    }
+
+    public static void removeProductbyproducttype(int id) {
+        loadDatabase();
+        for(int i = 0 ; i < products.size() ; i ++)
+        {
+            if(products.get(i).getProductType().getID() == id)
+            {
+                products.remove(i);
+            }
+        }
+        updateDatabase();
+    }
+
+    public static void modifyProductbyproducttype(ProductType producttype) {
+        loadDatabase();
+        for(int i = 0 ; i < products.size() ; i ++)
+        {
+            if(products.get(i).getProductType().getID() == producttype.getID())
+            {
+                products.get(i).setProductType(producttype);
+            }
+        }
+        updateDatabase();
+    }
+
+    
+    public static void removeProductbyequipment(Equipment equipmentByID) {
+        loadDatabase();
+        for(int i = 0 ; i < products.size() ; i ++)
+        {
+            if(products.get(i).getEquipment().getID() == equipmentByID.getID())
+            {
+                products.remove(i);
+            }
+        }
+        updateDatabase();
+    }
+
+    public static void modifyProductEquipment(Equipment equipment) {
+        loadDatabase();
+        for(int i = 0 ; i < products.size() ; i ++) {
+            if(products.get(i).getEquipment().getID() == equipment.getID()) {
+                products.get(i).setEquipment(equipment);
+            }
+        }
+        updateDatabase();
+    }
+
+    public static void removeProductbyEquipmentType(EquipmentType equipmentType) {
+        loadDatabase();
+        for(int i = 0 ; i < products.size() ; i ++)
+        {
+            if(products.get(i).getEquipment().getType().getID() == equipmentType.getID())
+            {
+                products.remove(i);
+            }
+        }
+        updateDatabase();
+    }
+
+    public static void modifyProductEquipment(ArrayList<Equipment> equipment) {
+        for(int j = 0 ; j < equipment.size() ; j ++) {
+            modifyProductEquipment(equipment.get(j));
+        }
+        updateDatabase();
+    }
+
+    
+    public static void modifyProductbyfactory(Factory factory) {
+        loadDatabase();
+        for(int i = 0 ; i < products.size() ; i ++) {
+            if(products.get(i).getFactory().getId() == factory.getId()) {
+                products.get(i).setFactory(factory);
+            }
+        }
         updateDatabase();
     }
 

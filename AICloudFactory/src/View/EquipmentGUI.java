@@ -7,6 +7,7 @@ import javax.swing.table.DefaultTableModel;
 import DataBase.EquipmentDataBase;
 import DataBase.EquipmentTypeDataBase;
 import DataBase.FactoryDataBase;
+import DataBase.ProductDataBase;
 import Model.Equipment;
 import Model.EquipmentType;
 import Model.Factory;
@@ -292,6 +293,7 @@ class EquipmentModifyDialog extends JDialog implements ActionListener {
             equipment.setSwitchable(switchable);
             equipment.setDescription(description);
 
+            ProductDataBase.modifyProductEquipment(equipment);
             EquipmentDataBase.modifyEquipment(equipment);
             dispose();
         } else if (e.getSource() == cancelButton) {
@@ -437,6 +439,7 @@ public class EquipmentGUI extends JFrame {
                 int id = Integer.parseInt(tableModel.getValueAt(row, 0).toString());
                 int result = JOptionPane.showConfirmDialog(null, "确定要删除该设备吗？", "提示", JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
+                    ProductDataBase.removeProductbyequipment(EquipmentDataBase.getEquipmentByID(id));
                     EquipmentDataBase.removeEquipment(EquipmentDataBase.getEquipmentByID(id));
                     tableModel.removeRow(row);
                 }

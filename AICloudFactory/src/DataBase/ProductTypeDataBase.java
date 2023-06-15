@@ -12,12 +12,21 @@ public class ProductTypeDataBase {
     private static final String FILE_PATH = "C:\\Users\\DELL\\Desktop\\vscodejava\\Work\\AICloudFactory\\Data\\ProductTypes.dat";
 
     public static void addProductType(ProductType productType) {
+        loadDatabase();
         productTypes.add(productType);
         updateDatabase();
     }
 
     public static void removeProductType(ProductType productType) {
-        productTypes.remove(productType);
+        loadDatabase();
+        for(int i = 0 ; i < productTypes.size() ; i ++)
+        {
+            if(productTypes.get(i).getID() == productType.getID())
+            {
+                productTypes.remove(i);
+                break;
+            }
+        }
         updateDatabase();
     }
 
@@ -75,8 +84,16 @@ public class ProductTypeDataBase {
     }
 
     
-    public static void modifyProductType(ProductType productType, String newName) {
-        productType.setName(newName);
+    public static void modifyProductType(ProductType productType) {
+        loadDatabase();
+        for(int i = 0 ; i < productTypes.size() ;  i++)
+        {
+            if(productTypes.get(i).getID() == productType.getID())
+            {
+                productTypes.get(i).setName(productType.getName());
+                break;
+            }
+        }
         updateDatabase();
     }
 

@@ -125,4 +125,8 @@ public class Equipment {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public void setType(EquipmentType newequipmentType) {
+        this.type = newequipmentType;
+    }
 }

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import Model.Factory;
+import Model.User;
 
 public class FactoryDataBase {
     private static ArrayList<Factory> factories = new ArrayList<Factory>();
@@ -115,6 +116,30 @@ public static Factory getFactoryByOwnerName(String ownerName) {
         }
         return null;
     }
+
+    public static Factory getFactoryByownerID(int id) {
+        loadDatabase();
+        for(int i = 0 ; i < factories.size() ;  i++)
+        {
+            if(factories.get(i).getOwner().getId() == id)
+            {
+                return factories.get(i);
+            }
+        }
+        return null;
+    }
+
+    public static void modifyFactory(Factory factory) {
+        loadDatabase();
+        for (int i = 0; i < factories.size(); i++) {
+            if (factories.get(i).getId() == factory.getId()) {
+                factories.set(i, factory);
+                updateDatabase();
+                return;
+            }
+        }
+    }
+
 
 
 

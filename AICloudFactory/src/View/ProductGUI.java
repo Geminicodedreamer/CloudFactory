@@ -409,7 +409,7 @@ public class ProductGUI extends JFrame implements ActionListener {
         backButton.addActionListener(this);
         panel.add(backButton);
 
-        String[] columnNames = {"ID", "产品编号", "产品名称", "产品类别", "产品规格", "产品描述"};
+        String[] columnNames = {"ID", "产品编号", "产品名称","产品规格" , "产品类别", "产品描述"};
         tableModel = new DefaultTableModel(columnNames, 0);
         productTable = new JTable(tableModel);
         scrollPane = new JScrollPane(productTable);

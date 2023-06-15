@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.print.attribute.standard.Sides;
+
 import Model.EquipmentType;
 
 public class EquipmentTypeDataBase {
@@ -13,12 +15,21 @@ public class EquipmentTypeDataBase {
     private static final String FILE_PATH = "C:\\Users\\DELL\\Desktop\\vscodejava\\Work\\AICloudFactory\\Data\\EquipmentTypes.dat";
 
     public static void addEquipmentType(EquipmentType equipmentType) {
+        loadDatabase();
         equipmentTypes.add(equipmentType);
         updateDatabase();
     }
 
     public static void removeEquipmentType(EquipmentType equipmentType) {
-        equipmentTypes.remove(equipmentType);
+        loadDatabase();
+        for(int i = 0 ; i < equipmentTypes.size(); i ++)
+        {
+            if(equipmentTypes.get(i).getID() == equipmentType.getID())
+            {
+                equipmentTypes.remove(i);
+                break;
+            }
+        }
         updateDatabase();
     }
 
@@ -53,6 +64,7 @@ public class EquipmentTypeDataBase {
             }
             String[] equipmentTypeInfos = equipmentTypeInfo.split("\n");
             for (String info : equipmentTypeInfos) {
+                if(info.isEmpty()) continue;
                 String[] equipmentTypeAttributes = info.split("_");
                 EquipmentType equipmentType = new EquipmentType(Integer.parseInt(equipmentTypeAttributes[0]) , equipmentTypeAttributes[1]);
                 equipmentType.setID(Integer.parseInt(equipmentTypeAttributes[0]));
@@ -77,7 +89,15 @@ public class EquipmentTypeDataBase {
 
     
     public static void modifyEquipmentType(EquipmentType equipmentType, String newName) {
-        equipmentType.setName(newName);
+    loadDatabase();
+        for(int i = 0 ; i < equipmentTypes.size(); i ++)
+        {
+            if(equipmentTypes.get(i).getID() == equipmentType.getID())
+            {
+                equipmentTypes.get(i).setName(newName);
+                break;
+            }
+        }
         updateDatabase();
     }
 }

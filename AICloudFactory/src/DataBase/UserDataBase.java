@@ -57,6 +57,7 @@ public class UserDataBase {
             users.clear();
             String[] userStrings = sb.toString().split("\n");
             for (String userString : userStrings) {
+                if(userString.isEmpty()) continue;
                 String[] userAttrs = userString.split("_");
                 User user = new User(userAttrs[1], userAttrs[2], userAttrs[3], userAttrs[4], userAttrs[5] ,Integer.parseInt(userAttrs[0]));
                 users.add(user);
@@ -91,6 +92,7 @@ public class UserDataBase {
         loadDatabase();
         for (int i = 0; i < users.size(); i++) {
             if (users.get(i).getId() == selectedUser.getId()) {
+                
                 users.set(i, selectedUser);
                 updateDatabase();
                 break;

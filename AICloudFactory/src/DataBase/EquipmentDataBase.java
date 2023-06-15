@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import Model.Equipment;
+import Model.EquipmentType;
+import Model.Factory;
 
 public class EquipmentDataBase {
     private static ArrayList<Equipment> equipments = new ArrayList<Equipment>();
@@ -141,6 +143,7 @@ public class EquipmentDataBase {
     }
 
     public static void modifyEquipmentstatus(Equipment equipment) {
+        loadDatabase();
         int index = equipments.indexOf(equipment);
         if (index != -1) {
             equipment.setSwitchable(!equipment.isSwitchable());
@@ -148,6 +151,77 @@ public class EquipmentDataBase {
             updateDatabase();
         }
     }
+
+    public static void removeEquipmentbyfactoryid(int id) {
+        loadDatabase();
+        for(int i = 0 ; i < equipments.size() ;  i++)
+        {
+            if(equipments.get(i).getFactory() != null && equipments.get(i).getFactory().getId() == id)
+            {
+                if(equipments.get(i).isBorrowable().equals("工厂设备"))
+                {
+                    equipments.remove(i);
+                }
+                else if(equipments.get(i).isBorrowable().equals("是"))
+                {
+                    equipments.get(i).setBorrowable("否");
+                    equipments.get(i).setFactory(null);
+                }
+                
+            }
+        }
+        updateDatabase();
+    }
+
+    public static void removeEquipmentbyequipmenttype(EquipmentType equipmentType) {
+        loadDatabase();
+        for(int i = 0 ; i < equipments.size() ;  i++)
+        {
+            if(equipments.get(i).getType().getID() == equipmentType.getID())
+            {
+                equipments.remove(i);
+            }
+        }
+        updateDatabase();
+    }
+
+    public static void modifyEquipmentbyequipmenttype(EquipmentType newequipmentType) {
+        loadDatabase();
+        for(int i = 0 ; i < equipments.size() ;  i++)
+        {
+            if(equipments.get(i).getType().getID() == newequipmentType.getID())
+            {
+                equipments.get(i).setType(newequipmentType);
+            }
+        }
+        updateDatabase();
+    }
+
+    public static ArrayList<Equipment> getEquipmentByEquipmentType(EquipmentType equipmentType) {
+        loadDatabase();
+        ArrayList<Equipment> equipmentsOfType = new ArrayList<Equipment>();
+        for (Equipment equipment : equipments) {
+            if (equipment.getType().getID() == equipmentType.getID()) {
+                equipmentsOfType.add(equipment);
+            }
+        }
+        return equipmentsOfType;
+    }
+
+    public static void modifyEquipmentbyfactory(Factory factory) {
+        loadDatabase();
+        for(int i = 0 ; i < equipments.size() ;  i++)
+        {
+            if(equipments.get(i).getFactory() != null && equipments.get(i).getFactory().getId() == factory.getId())
+            {
+                equipments.get(i).setFactory(factory);
+            }
+        }
+        updateDatabase();
+    }
+
+
+
 
 
 

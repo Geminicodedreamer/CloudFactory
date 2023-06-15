@@ -4,7 +4,9 @@ import javax.lang.model.util.ElementScanner14;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import DataBase.EquipmentDataBase;
 import DataBase.FactoryDataBase;
+import DataBase.ProductDataBase;
 import DataBase.UserDataBase;
 import Model.CloudAdmin;
 import Model.Factory;
@@ -118,13 +120,13 @@ class newuser extends JDialog implements ActionListener{
                     if(factoryNameLabel != null && factoryNameField != null && factoryDescriptionLabel != null && factoryDescriptionField != null)
                     {
                         panel.remove(factoryNameLabel);
-                    panel.remove(factoryNameField);
-                    panel.remove(factoryDescriptionLabel);
-                    panel.remove(factoryDescriptionField);
-                    factoryNameLabel = null;
-                    factoryNameField=null;
-                    factoryDescriptionLabel=null;
-                    factoryDescriptionField=null;
+                        panel.remove(factoryNameField);
+                        panel.remove(factoryDescriptionLabel);
+                        panel.remove(factoryDescriptionField);
+                        factoryNameLabel = null;
+                        factoryNameField=null;
+                        factoryDescriptionLabel=null;
+                        factoryDescriptionField=null;
                     }
                 }
                 panel.revalidate();
@@ -190,10 +192,12 @@ class ModifyUser extends JDialog implements ActionListener {
     private JLabel phoneNumberLabel;
     private JTextField phoneNumberField;
     private JLabel roleLabel;
+    private String originUser;
 
     public ModifyUser(JFrame parent, User selectedUser) {
         super(parent , "修改用户信息" , true);
         this.selectedUser = selectedUser;
+        this.originUser = selectedUser.getRole();
         setSize(400, 500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -328,19 +332,24 @@ class ModifyUser extends JDialog implements ActionListener {
             selectedUser.setPhoneNumber(phoneNumber);
             selectedUser.setRole(role);
 
-            if(role.equals("云工厂")){
-                boolean isExist = false;
-                for(Factory factory : FactoryDataBase.getFactories()){
-                    if(factory.getOwner().getId() == selectedUser.getId()){
-                        isExist = true;
-                        break;
-                    }
-                }
-                if(!isExist){
-                    new CloudAdmin(account, selectedUser.getPassword(),role,name , phoneNumber ,selectedUser.getId(),factoryNameField.getText(), factoryDescriptionField.getText());
-                }
-            }else if(role.equals("经销商")){
-                FactoryDataBase.removeFactoryByOwnerid(selectedUser.getId());
+            if(role.equals("云工厂") && originUser.equals("经销商")){
+                new CloudAdmin(account, selectedUser.getPassword(),role,name , phoneNumber ,selectedUser.getId(),factoryNameField.getText(), factoryDescriptionField.getText());
+            }else if(role.equals("云工厂") && originUser.equals("云工厂")){
+                User user = new User(account, selectedUser.getPassword(),role,name , phoneNumber , selectedUser.getId());
+                UserDataBase.updateUser(user);
+                Factory factory = FactoryDataBase.getFactoryByownerID(selectedUser.getId());
+                Factory newFactory = new Factory(factory.getId() , factoryNameField.getText(), factoryDescriptionField.getText(), name, "正常");
+                ProductDataBase.modifyProductbyfactory(newFactory);
+                EquipmentDataBase.modifyEquipmentbyfactory(newFactory);
+                FactoryDataBase.modifyFactory(newFactory);
+            }else if(role.equals("经销商") && originUser.equals("云工厂")){
+                int id = selectedUser.getId();
+                ProductDataBase.removeProductbyfactoryid(FactoryDataBase.getFactoryByownerID(id).getId());
+                EquipmentDataBase.removeEquipmentbyfactoryid(FactoryDataBase.getFactoryByownerID(id).getId());
+                FactoryDataBase.removeFactoryByOwnerid(id);
+                User user = new User(account, selectedUser.getPassword(),role,name , phoneNumber , selectedUser.getId());
+                UserDataBase.updateUser(user);
+            }else if(role.equals("经销商") && originUser.equals("经销商")){
                 User user = new User(account, selectedUser.getPassword(),role,name , phoneNumber , selectedUser.getId());
                 UserDataBase.updateUser(user);
             }
@@ -490,6 +499,8 @@ public class UserGUI extends JFrame implements ActionListener {
                 int id = (int) table.getValueAt(selectedRows[i], 0);
                 User user = UserDataBase.getUserById(id);
                 if(user.getRole().equals("云工厂")){
+                    ProductDataBase.removeProductbyfactoryid(FactoryDataBase.getFactoryByownerID(id).getId());
+                    EquipmentDataBase.removeEquipmentbyfactoryid(FactoryDataBase.getFactoryByownerID(id).getId());
                     FactoryDataBase.removeFactoryByOwnerid(id);
                 }
                 UserDataBase.removeUserbyid(id);
@@ -510,6 +521,12 @@ public class UserGUI extends JFrame implements ActionListener {
             JOptionPane.showMessageDialog(this, "未找到该用户。");
             return;
         }
+        
+        if(selectedUser.getRole().equals("系统管理员")){
+            JOptionPane.showMessageDialog(this, "系统管理员不可修改。");
+            return;
+        }
+
         new ModifyUser(this, selectedUser);
         resetTable();
     }
