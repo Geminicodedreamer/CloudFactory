@@ -41,7 +41,7 @@ public class FactoryGUI extends JFrame implements ActionListener {
     private JScrollPane scrollPane;
     private ArrayList<Factory> factories;
     private Factory selectedFactory;
-
+    private JButton resetButton;
     public FactoryGUI() {
         super("工厂管理系统");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -61,12 +61,17 @@ public class FactoryGUI extends JFrame implements ActionListener {
         toggleButton = new JButton("切换状态");
         toggleButton.addActionListener(this);
         
+        resetButton = new JButton("重置");
+        resetButton.addActionListener(this);
+
+        
+        
         searchPanel.add(searchLabel);
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
         searchPanel.add(toggleButton);
-        new FactoryDataBase();
-        FactoryDataBase.loadDatabase();
+        searchPanel.add(resetButton);
+        
         tablePanel = new JPanel(new GridLayout(1, 1));
         factories = FactoryDataBase.getFactories();
         String[] columnNames = {"ID", "工厂名称", "工厂简介", "负责人", "负责人的联系方式", "负责人登录账号用户名", "工厂状态"};
@@ -137,16 +142,16 @@ public class FactoryGUI extends JFrame implements ActionListener {
             if (factoryName.equals("")) {
                 JOptionPane.showMessageDialog(this, "请输入工厂名称！", "错误", JOptionPane.ERROR_MESSAGE);
             } else {
+                factories = FactoryDataBase.getFactories();
+                String[] columnNames = {"ID", "工厂名称", "工厂简介", "负责人", "负责人的联系方式", "负责人登录账号用户名", "工厂状态"};
+                Object[][] data = new Object[1][8];
                 selectedFactory = FactoryDataBase.getFactoryByName(factoryName);
                 if (selectedFactory == null) {
                     JOptionPane.showMessageDialog(this, "未找到该工厂！", "错误", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    for (int i = 0; i < factoryTable.getRowCount(); i++) {
-                        if (factoryTable.getValueAt(i, 1).equals(factoryName)) {
-                            factoryTable.setRowSelectionInterval(i, i);
-                            break;
-                        }
-                    }
+                    tableModel.setRowCount(0);
+                    Object[] rowData = {selectedFactory.getId(), selectedFactory.getName(), selectedFactory.getIntroduction(), selectedFactory.getOwner().getName(), selectedFactory.getOwner().getPhoneNumber(), selectedFactory.getOwner().getAccount(), selectedFactory.getStatus()};
+                    tableModel.addRow(rowData);
                 }
             }
         } else if (e.getSource() == toggleButton) {
@@ -169,6 +174,20 @@ public class FactoryGUI extends JFrame implements ActionListener {
             dispose();
             new MenuGUI();
         }
+        else if(e.getSource() == resetButton)
+        {
+        
+        factories = FactoryDataBase.getFactories();
+        tableModel.setRowCount(0);
+                    for (int i = 0; i < factories.size(); i++) {
+                        Object[] rowData = {factories.get(i).getId(), factories.get(i).getName(), factories.get(i).getIntroduction(), factories.get(i).getOwner().getName(), factories.get(i).getOwner().getPhoneNumber(), factories.get(i).getOwner().getAccount(), factories.get(i).getStatus()};
+                        tableModel.addRow(rowData);
+                    }
+        }
+    }
+
+    public static void main(String[] args) {
+        new FactoryGUI();
     }
 
 }
