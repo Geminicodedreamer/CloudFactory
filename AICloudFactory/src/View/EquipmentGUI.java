@@ -473,7 +473,6 @@ public class EquipmentGUI extends JFrame {
                 }
                 int id = Integer.parseInt(tableModel.getValueAt(row, 0).toString());
                 Equipment equipment = EquipmentDataBase.getEquipmentByID(id);
-                equipment.setSwitchable(equipment.isSwitchable());
                 EquipmentDataBase.modifyEquipmentstatus(equipment);
                 updateTable();
             }

@@ -144,12 +144,14 @@ public class EquipmentDataBase {
 
     public static void modifyEquipmentstatus(Equipment equipment) {
         loadDatabase();
-        int index = equipments.indexOf(equipment);
-        if (index != -1) {
-            equipment.setSwitchable(!equipment.isSwitchable());
-            equipments.set(index, equipment);
-            updateDatabase();
+        for(int i = 0 ; i < equipments.size() ;  i++)
+        {
+            if(equipments.get(i).getID() == equipment.getID())
+            {
+                equipments.get(i).setSwitchable(!equipment.isSwitchable());
+            }
         }
+        updateDatabase();
     }
 
     public static void removeEquipmentbyfactoryid(int id) {
