@@ -63,7 +63,12 @@ class rentEquipmentGUI extends JDialog implements ActionListener
             rowData[i][7] = (equipment.isBorrowable().equals("是"))?"已被租用":"未被租用";
             rowData[i][8] = (equipment.getFactory() != null)?equipment.getFactory().getName():"";
         }
-        tableModel = new DefaultTableModel(rowData, columnNames);
+        tableModel = new DefaultTableModel(rowData, columnNames){
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
         equipmentTable = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(equipmentTable);
         scrollPane.setBounds(50, 50, 700, 400);
@@ -119,7 +124,7 @@ class rentEquipmentGUI extends JDialog implements ActionListener
             rowData[i][0] = equipment.getID();
             rowData[i][1] = equipment.getName();
             rowData[i][2] = equipment.getCode();
-            rowData[i][3] = equipment.getType();
+            rowData[i][3] = equipment.getType().getName();
             rowData[i][4] = equipment.getSpecification();
             rowData[i][5] = equipment.isSwitchable()?"开机":"关机";
             rowData[i][6] = equipment.getDescription();
